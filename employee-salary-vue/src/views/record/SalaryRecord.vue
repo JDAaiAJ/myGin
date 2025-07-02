@@ -464,40 +464,43 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
 
 <template>
   <el-card class="page-container">
-    <div class="header" style="font-size: 18px;margin-bottom: 10px">薪资录入</div>
-
-    <!-- 搜索表单 -->
-    <el-form inline>
-      <el-form-item label="选择月份：">
-        <el-date-picker
-            v-model="month"
-            type="month"
-            placeholder="请选择月份"
-            value-format="YYYY-MM"
-            style="width: 200px"
-        />
-      </el-form-item>
-      <el-form-item label="录入员工姓名：">
-        <el-select v-model="user_id" placeholder="请选择姓名" style="width: 260px" clearable>
-          <el-option
-              v-for="user in users"
-              :key="user.id"
-              :label="user.name"
-              :value="user.id"
+    <!-- 上部分：搜索表单 -->
+    <div class="search-form-container">
+      <!-- 搜索表单 -->
+      <el-form inline>
+        <el-form-item label="选择月份：">
+          <el-date-picker
+              v-model="month"
+              type="month"
+              placeholder="请选择月份"
+              value-format="YYYY-MM"
+              style="width: 200px"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getUserSalaryList()">选择</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <el-form-item label="录入员工姓名：">
+          <el-select v-model="user_id" placeholder="请选择姓名" style="width: 260px" clearable>
+            <el-option
+                v-for="user in users"
+                :key="user.id"
+                :label="user.name"
+                :value="user.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getUserSalaryList()">选择</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
+
 
     <!-- 生产情况展示与新增组件布局 -->
     <el-row :gutter="20">
       <!-- 左侧：员工生产情况 -->
       <el-col :span="16">
         <el-card>
-          <el-table :data="userSalaryList" border style="width: 100%;height: 620px">
+          <el-table :data="userSalaryList" border style="width: 100%;height: 590px">
             <el-table-column prop="date" label="日期"></el-table-column>
             <el-table-column prop="code" label="服饰编号/特殊">
               <template #default="scope">
@@ -700,15 +703,30 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
 </template>
 <style lang="scss" scoped>
 .page-container {
-  min-height: 93%;
+  min-height: 100%;
   box-sizing: border-box;
+  background-color: #f0f0f0; // 整体背景颜色为灰色
 
-  .header {
+  .content-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    width: 100%;
+  }
+
+  .search-form-container,
+  .table-container {
+    width: 98%;
+
+    background-color: #fff; // 纯白色背景
+    border-radius: 5px;
+    padding: 20px 8px 0px 8px;
+    margin-bottom: 10px;
+
+    &:last-child {
+      margin-bottom: 10px;
+
+    }
   }
 }
-
-
 </style>

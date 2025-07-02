@@ -200,14 +200,14 @@ const editUserBtn = async (id) => {
 
 // 时间戳转换为完整日期时间格式（YYYY-MM-DD HH:mm:ss）
 function formatDate(timestamp) {
-  var date = new Date(timestamp * 1000); // 注意：如果你传入的是秒级时间戳，需要乘以 1000
+  const date = new Date(timestamp * 1000); // 注意：如果你传入的是秒级时间戳，需要乘以 1000
 
-  var year = date.getFullYear();
-  var month = String(date.getMonth() + 1).padStart(2, '0'); // 补零
-  var day = String(date.getDate()).padStart(2, '0');
-  var hours = String(date.getHours()).padStart(2, '0');
-  var minutes = String(date.getMinutes()).padStart(2, '0');
-  var seconds = String(date.getSeconds()).padStart(2, '0');
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 补零
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
 
   return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
 }
@@ -247,83 +247,90 @@ const deleteUser = async (id) => {
 </script>
 <template>
   <el-card class="page-container">
-    <template #header>
-      <div class="header">
-        <span>用户管理</span>
-        <el-button v-if="userInfo.type === 1 || userInfo.u_id === 1" type="success" @click="addUserButton()" >添加用户</el-button>
+    <!-- 整体容器 -->
+    <div class="content-container">
+      <!-- 上部分：搜索表单 -->
+      <div class="search-form-container">
+        <!-- 搜索表单 -->
+        <el-form inline>
+          <el-form-item label="真实姓名：" size="large">
+            <el-input v-model="name" placeholder="输入名称" size="large" style="width: 260px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getAllUserList();" size="large">搜索</el-button>
+            <el-button @click="name = ''" size="large">重置</el-button>
+            <el-button v-if="userInfo.type === 1 || userInfo.u_id === 1" type="success" @click="addUserButton()" size="large">添加用户</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </template>
-    <!-- 搜索表单 -->
-    <el-form inline>
-      <el-form-item label="真实姓名：" size="large">
-        <el-input v-model="name" placeholder="输入名称" size="large" style="width: 260px"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getAllUserList();" size="large">搜索</el-button>
-        <el-button @click="name = ''" size="large">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="userList" border style="width: 100%;margin-top: 20px" v-loading="loadingMain">
-      <el-table-column label="序号" type="index" ></el-table-column>
-      <el-table-column label="用户ID" prop="id" width="100"></el-table-column>
-      <el-table-column label="真实姓名" prop="name" width="120"></el-table-column>
-      <el-table-column label="用户名" prop="username"></el-table-column>
-      <el-table-column label="密码" prop="password" width="180">
-        <template #default="scope">
+
+      <!-- 下部分：表格内容展示 -->
+      <div class="table-container">
+        <el-table :data="userList" border style="width: 100%;height: 520px;margin-top: 20px" v-loading="loadingMain">
+          <el-table-column label="序号" type="index" ></el-table-column>
+          <el-table-column label="用户ID" prop="id" width="100"></el-table-column>
+          <el-table-column label="真实姓名" prop="name" width="120"></el-table-column>
+          <el-table-column label="用户名" prop="username"></el-table-column>
+          <el-table-column label="密码" prop="password" width="180">
+            <template #default="scope">
           <span @click="togglePasswordVisibility(scope.row)" style="cursor: pointer">
           {{ scope.row.showPassword ? scope.row.password : '************' }}
           </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="所属工厂" prop="f_name" width="260">
-        <template #default="scope">
-          <el-tag type="success" v-if="scope.row.f_id === 0">无</el-tag>
-          <el-tag type="success" v-else >{{ scope.row.f_name }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="职位" prop="type">
-        <template #default="scope">
-          <el-tag v-if="scope.row.type === 0 && scope.row.id === 1">管理员</el-tag>
-          <el-tag v-if="scope.row.type === 0 && scope.row.id !== 1">暂无职位</el-tag>
-          <el-tag v-if="scope.row.type === 1">厂长</el-tag>
-          <el-tag v-if="scope.row.type === 2">车位</el-tag>
-          <el-tag v-if="scope.row.type === 3">裁床</el-tag>
-          <el-tag v-if="scope.row.type === 4">尾部</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" prop="status">
-        <template #default="scope">
-          <el-tag v-if="scope.row.status === 0">离职</el-tag>
-          <el-tag v-if="scope.row.status === 1">在职</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="所属工厂" prop="f_name" width="260">
+            <template #default="scope">
+              <el-tag type="success" v-if="scope.row.f_id === 0">无</el-tag>
+              <el-tag type="success" v-else >{{ scope.row.f_name }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="职位" prop="type">
+            <template #default="scope">
+              <el-tag v-if="scope.row.type === 0 && scope.row.id === 1">管理员</el-tag>
+              <el-tag v-if="scope.row.type === 0 && scope.row.id !== 1">暂无职位</el-tag>
+              <el-tag v-if="scope.row.type === 1">厂长</el-tag>
+              <el-tag v-if="scope.row.type === 2">车位</el-tag>
+              <el-tag v-if="scope.row.type === 3">裁床</el-tag>
+              <el-tag v-if="scope.row.type === 4">尾部</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" prop="status">
+            <template #default="scope">
+              <el-tag v-if="scope.row.status === 0">离职</el-tag>
+              <el-tag v-if="scope.row.status === 1">在职</el-tag>
 
-        </template>
-      </el-table-column>
-      <el-table-column label="入库时间" prop="insert_time" width="200">
-        <template #default="scope">
-          <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" prop="insert_time" width="200">
-        <template #default="scope">
-          <el-tag>{{ formatDate(scope.row.update_time) }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="200">
-        <template #default="scope">
-          <el-button v-if="scope.row.id !== 1" type="primary" @click="editUserBtn(scope.row.id)">编辑</el-button>
-          <el-button v-if="scope.row.id !== 1 && userStore.user.u_id === 1" type="danger" @click="deleteUser(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="入库时间" prop="insert_time" width="200">
+            <template #default="scope">
+              <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间" prop="insert_time" width="200">
+            <template #default="scope">
+              <el-tag>{{ formatDate(scope.row.update_time) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="200">
+            <template #default="scope">
+              <el-button v-if="scope.row.id !== 1" type="primary" @click="editUserBtn(scope.row.id)">编辑</el-button>
+              <el-button v-if="scope.row.id !== 1 && userStore.user.u_id === 1" type="danger" @click="deleteUser(scope.row.id)">删除</el-button>
 
-        </template>
-      </el-table-column>
-      <template #empty>
-        <el-empty description="没有数据"/>
-      </template>
-    </el-table>
+            </template>
+          </el-table-column>
+          <template #empty>
+            <el-empty description="没有数据"/>
+          </template>
+        </el-table>
+        <!-- 分页条 -->
+        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
+                       layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
+                       @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
+      </div>
+
+    </div>
+
   </el-card>
-  <!-- 分页条 -->
-  <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
-                 layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
-                 @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
 
   <!-- 添加用户的对话框 -->
   <el-dialog v-model="dialogVisible" title="添加用户" width="26%">
@@ -425,14 +432,30 @@ const deleteUser = async (id) => {
 </template>
 <style lang="scss" scoped>
 .page-container {
-  min-height: 93%;
+  min-height: 100%;
   box-sizing: border-box;
+  background-color: #f0f0f0; // 整体背景颜色为灰色
 
-  .header {
+  .content-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    width: 100%;
+  }
+
+  .search-form-container,
+  .table-container {
+    width: 98%;
+
+    background-color: #fff; // 纯白色背景
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 10px;
+
+    }
   }
 }
-
 </style>

@@ -47,38 +47,34 @@ const resetSearch = () => {
 </script>
 <template>
   <el-card class="page-container">
-    <template #header>
-      <div class="header">
-        <span>薪资管理</span>
-        <!--        <el-button type="success" @click="addClothingButton()" size="large">添加薪资</el-button>-->
-      </div>
-    </template>
 
-    <!-- 搜索表单 -->
-    <el-form inline>
-      <el-form-item label="选择月份：" size="large">
-        <el-date-picker
-            v-model="month"
-            type="month"
-            placeholder="请选择月份"
-            value-format="YYYY-MM" style="width: 200px"
-        />
-      </el-form-item>
-      <el-form-item label="员工姓名：" size="large">
-        <el-input v-model="name" placeholder="输入姓名" size="large" style="width: 260px"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getUserMonthSalaryList()" size="large">搜索</el-button>
-        <el-button @click="resetSearch" size="large">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <!-- 上部分：搜索表单 -->
+    <div class="search-form-container">
+      <el-form inline>
+        <el-form-item label="选择月份：" size="large">
+          <el-date-picker
+              v-model="month"
+              type="month"
+              placeholder="请选择月份"
+              value-format="YYYY-MM" style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="员工姓名：" size="large">
+          <el-input v-model="name" placeholder="输入姓名" size="large" style="width: 260px"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getUserMonthSalaryList()" size="large">搜索</el-button>
+          <el-button @click="resetSearch" size="large">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
     <!-- 卡片列表滚动区域 -->
     <div class="card-list-container" v-loading="loadingMain">
       <div v-if="monthSalaryList.length > 0" class="card-list">
         <el-card v-for="(item, index) in monthSalaryList" :key="index" shadow="hover" class="salary-card">
           <div class="card-header">
-            <span><strong>月份：</strong>{{ item.month }}</span>
+            <span><strong>月份：</strong> {{ item.month }}</span>
             <el-tag type="primary">{{ item.name }}</el-tag>
           </div>
           <div class="card-body">
@@ -88,9 +84,8 @@ const resetSearch = () => {
               <span v-else-if="item.type === 4">尾部</span>
               <span v-else>未知职位</span>
             </p>
+            <p><strong>薪资总额：</strong> {{ item.total }}</p>
           </div>
-          <p><strong>薪资总额：</strong>{{ item.total }}</p>
-
           <div class="card-footer">
             <el-button type="success" @click="">查看详情</el-button>
           </div>
@@ -104,20 +99,29 @@ const resetSearch = () => {
 </template>
 <style lang="scss" scoped>
 .page-container {
-  min-height: 93%;
+  min-height: 100%;
   box-sizing: border-box;
+  background-color: #f0f0f0; // 整体背景颜色为灰色
 
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .search-form-container {
+    width: 98%;
+    background-color: #fff; // 纯白色背景
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 10px;
+    }
   }
 
-  .card-list-container {
+  .card-list-container, .el-empty {
     margin-top: 20px;
     max-height: 600px; // 固定最大高度
     overflow-y: auto; // 超出显示滚动条
-    padding-right: 10px;
+    background-color: #fff; // 纯白色背景
+    border-radius: 5px;
+    padding: 20px;
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -136,7 +140,13 @@ const resetSearch = () => {
   }
 
   .salary-card {
+    background-color: #fff; // 卡片背景为纯白色
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     &:hover {
       transform: translateY(-5px);
@@ -149,18 +159,37 @@ const resetSearch = () => {
       align-items: center;
       font-weight: bold;
       margin-bottom: 10px;
+
+      span {
+        font-size: 16px;
+      }
+
+      .el-tag {
+        font-size: 14px;
+      }
     }
 
     .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
       p {
         margin: 8px 0;
+        font-size: 14px;
       }
     }
 
     .card-footer {
       margin-top: 10px;
       text-align: right;
+
+      .el-button {
+        font-size: 14px;
+      }
     }
   }
 }
 </style>
+

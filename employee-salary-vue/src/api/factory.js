@@ -5,6 +5,7 @@ const API_PATH = {
     FACTORY_ADD: '/factoryAdd',
     FACTORY_UPDATE: '/factoryUpdate',
     FACTORY_DELETE: '/factoryDelete',
+    FACTORY_DETAIL: '/factoryDetail',
 };
 
 
@@ -27,6 +28,11 @@ export const updateFactoryService = (data) => {
 //factory删除
 export const deleteFactoryService = (id) => {
     return request.post(API_PATH.FACTORY_DELETE, { id })
+}
+
+//获取工厂具体详情
+export const getFactoryDetailService = (params) => {
+    return request.get(API_PATH.FACTORY_DETAIL, {params:params})
 }
 
 

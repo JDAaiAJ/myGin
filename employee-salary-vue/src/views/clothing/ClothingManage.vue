@@ -59,14 +59,14 @@ const onCurrentChange = (num) => {
 
 // 时间戳转换为完整日期时间格式（YYYY-MM-DD HH:mm:ss）
 function formatDate(timestamp) {
-  var date = new Date(timestamp * 1000); // 注意：如果你传入的是秒级时间戳，需要乘以 1000
+  const date = new Date(timestamp * 1000); // 注意：如果你传入的是秒级时间戳，需要乘以 1000
 
-  var year = date.getFullYear();
-  var month = String(date.getMonth() + 1).padStart(2, '0'); // 补零
-  var day = String(date.getDate()).padStart(2, '0');
-  var hours = String(date.getHours()).padStart(2, '0');
-  var minutes = String(date.getMinutes()).padStart(2, '0');
-  var seconds = String(date.getSeconds()).padStart(2, '0');
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 补零
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
 
   return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
 }
@@ -250,62 +250,63 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
 </script>
 <template>
   <el-card class="page-container">
-    <template #header>
-      <div class="header">
-        <span>服饰管理</span>
-        <el-button type="success" @click="addClothingButton()" >添加服饰</el-button>
+    <!-- 整体容器 -->
+    <div class="content-container">
+      <!-- 上部分：搜索表单 -->
+      <div class="search-form-container">
+        <el-form inline>
+          <el-form-item label="服饰编号：" size="large">
+            <el-input v-model="code" placeholder="输入编号" size="large" style="width: 260px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getClothingList();" size="large">搜索</el-button>
+            <el-button @click="code = ''" size="large">重置</el-button>
+            <el-button type="success" @click="addClothingButton()" size="large">添加服饰</el-button>
+          </el-form-item>
+        </el-form>
       </div>
+      <!-- 下部分：表格内容展示 -->
+      <div class="table-container">
+        <el-table :data="clothingList" border style="width: 100%;height:520px;margin-top: 20px" v-loading="loadingMain" >
+          <el-table-column label="序号" type="index"></el-table-column>
+          <el-table-column label="服饰编号" prop="code"></el-table-column>
+          <el-table-column label="单价" prop="price" ></el-table-column>
+          <el-table-column label="图片" prop="image">
+            <template #default="scope">
+              <el-image :src="baseUrl + scope.row.image" style="width: 60px; height: 60px" :preview-src-list="[baseUrl + scope.row.image]" :preview-teleported="true"></el-image>
 
-    </template>
-    <!-- 搜索表单 -->
-    <el-form inline>
-      <el-form-item label="服饰编号：" size="large">
-        <el-input v-model="code" placeholder="输入编号" size="large" style="width: 260px"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getClothingList();" size="large">搜索</el-button>
-        <el-button @click="code = ''" size="large">重置</el-button>
-      </el-form-item>
-    </el-form>
-      <el-table :data="clothingList" border style="width: 100%;margin-top: 10px" v-loading="loadingMain" height="500">
-        <el-table-column label="序号" type="index"></el-table-column>
-        <el-table-column label="服饰编号" prop="code"></el-table-column>
-        <el-table-column label="单价" prop="price" ></el-table-column>
-        <el-table-column label="图片" prop="image">
-          <template #default="scope">
-            <el-image :src="baseUrl + scope.row.image" style="width: 80px; height: 80px" :preview-src-list="[baseUrl + scope.row.image]" :preview-teleported="true"></el-image>
+            </template>
+          </el-table-column>
+          <el-table-column label="来源" prop="source"></el-table-column>
+          <el-table-column label="添加人" prop="e_name"></el-table-column>
+          <el-table-column label="入库时间" prop="insert_time">
+            <template #default="scope">
+              <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间" prop="insert_time">
+            <template #default="scope">
+              <el-tag>{{ formatDate(scope.row.update_time) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button type="primary" @click="editClothingBtn(scope.row.id)">编辑</el-button>
+              <el-button type="danger" @click="deleteClothing(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
+          <template #empty>
+            <el-empty description="没有数据"/>
           </template>
-        </el-table-column>
-        <el-table-column label="来源" prop="source"></el-table-column>
-        <el-table-column label="添加人" prop="e_name"></el-table-column>
-        <el-table-column label="入库时间" prop="insert_time">
-          <template #default="scope">
-            <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="更新时间" prop="insert_time">
-          <template #default="scope">
-            <el-tag>{{ formatDate(scope.row.update_time) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button type="primary" @click="editClothingBtn(scope.row.id)">编辑</el-button>
-            <el-button type="danger" @click="deleteClothing(scope.row.id)">删除</el-button>
-          </template>
-        </el-table-column>
-        <template #empty>
-          <el-empty description="没有数据"/>
-        </template>
-      </el-table>
-
+        </el-table>
+        <!-- 分页条 -->
+        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
+                       layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
+                       @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
+      </div>
+    </div>
 
   </el-card>
-  <!-- 分页条 -->
-  <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
-                 layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
-                 @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
-
   <!-- 添加服饰的对话框 -->
   <el-dialog v-model="dialogVisible" title="添加服饰" width="30%">
     <el-form :model="clothingForm" label-width="100px" :rules="rules" ref="formRef">
@@ -406,14 +407,30 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
 </template>
 <style lang="scss" scoped>
 .page-container {
-  min-height: 93%;
+  min-height: 100%;
   box-sizing: border-box;
+  background-color: #f0f0f0; // 整体背景颜色为灰色
 
-  .header {
+  .content-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    width: 100%;
+  }
+
+  .search-form-container,
+  .table-container {
+    width: 98%;
+
+    background-color: #fff; // 纯白色背景
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 10px;
+
+    }
   }
 }
-
 </style>

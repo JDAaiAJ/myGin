@@ -2,8 +2,6 @@
 import {nextTick, onMounted, ref} from 'vue'
 import {ElMessage} from 'element-plus'
 
-
-
 //工厂列表
 const factoryList = ref([])
 
@@ -16,9 +14,13 @@ const total = ref(0)//总条数
 const pageSize = ref(20)//每页条数
 
 //获取所有用户记录数据
-import {getClothingListService,addClothingService,deleteClothingService,getClothingDetailService,updateClothingService} from "@/api/clothing.js";
-import {deleteClothingImageService} from "../../api/clothing";
-import {addFactoryService, deleteFactoryService, getFactoryListService} from "../../api/factory";
+import {
+  addFactoryService,
+  deleteFactoryService,
+  getFactoryDetailService,
+  getFactoryListService,
+  updateFactoryService
+} from "../../api/factory";
 
 const loadingMain = ref(false)
 
@@ -55,20 +57,6 @@ const onCurrentChange = (num) => {
   getFactoryList()
 }
 
-// 时间戳转换为完整日期时间格式（YYYY-MM-DD HH:mm:ss）
-function formatDate(timestamp) {
-  var date = new Date(timestamp * 1000); // 注意：如果你传入的是秒级时间戳，需要乘以 1000
-
-  var year = date.getFullYear();
-  var month = String(date.getMonth() + 1).padStart(2, '0'); // 补零
-  var day = String(date.getDate()).padStart(2, '0');
-  var hours = String(date.getHours()).padStart(2, '0');
-  var minutes = String(date.getMinutes()).padStart(2, '0');
-  var seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
-}
-
 // 控制对话框显示隐藏
 const dialogVisible = ref(false)
 
@@ -81,7 +69,7 @@ const factoryForm = ref({
 // 表单验证规则
 const rules = {
   name: [
-    {required: true, message: '厂不能为空', trigger: 'blur'}
+    {required: true, message: '工厂名不能为空', trigger: 'blur'}
   ],
 }
 
@@ -120,165 +108,159 @@ const deleteFactory = async (id) => {
 
 const editDialogVisible = ref(false);
 
-const fileList = ref([]); // 用于 el-upload 显示已有图片
-
-const originalImage = ref(''); // 新增响应式变量
 
 // 编辑服饰按钮
-const editClothingBtn = async (id) => {
+const editFactoryBtn = async (id) => {
   let params = { id: id };
-  let result = await getClothingDetailService(params);
+  let result = await getFactoryDetailService(params);
   if (result.code === 200) {
-    clothingForm.value = result.data;
-
-    // 保留原始 image 路径用于提交更新
-    const imagePath = clothingForm.value.image;
-    originalImage.value = imagePath; // 记录原始图片路径
-
-    // 设置 fileList 显示图片
-    if (imagePath) {
-      fileList.value = [
-        {
-          name: '图片',
-          url: baseUrl + imagePath,
-          uid: -1,
-        },
-      ];
-    } else {
-      fileList.value = [];
-    }
-
-    clothingForm.value.image = imagePath;
-
+    factoryForm.value = result.data;
     await nextTick();
     editDialogVisible.value = true;
-    ElMessage.success(result.message ? result.message : '获取服饰成功');
+    ElMessage.success(result.message ? result.message : '获取成功');
   } else {
-    ElMessage.warning(result.message ? result.message : '获取服饰失败');
+    ElMessage.warning(result.message ? result.message : '获取失败');
   }
 };
 
 // 编辑服饰确认按钮
 const editFactoryConfirm = async () => {
 
-  // 判断是否需要删除图片
-  if (!clothingForm.value.image && originalImage.value) {
-    // 用户删除了图片，需要调用删除接口
-    const deleteResult = await deleteClothingImageService({
-      filePath: originalImage.value
-    });
-
-    if (deleteResult.code !== 200) {
-      ElMessage.warning(deleteResult.message || '图片删除失败');
-    }else {
-      ElMessage.success('图片已从服务器删除');
-    }
-
-
-  }
-
   // 提交服饰信息
-  let result = await updateClothingService(clothingForm.value);
+  let result = await updateFactoryService(factoryForm.value);
 
   if (result.code === 200){
-    ElMessage.success(result.message? result.message : '编辑服饰成功');
+    ElMessage.success(result.message? result.message : '编辑成功');
     editDialogVisible.value = false;
-    await getClothingList();
+    await getFactoryList();
   } else {
-    ElMessage.warning(result.message? result.message : '编辑服饰失败');
+    ElMessage.warning(result.message? result.message : '编辑失败');
   }
+}
+
+// 时间戳转换为完整日期时间格式（YYYY-MM-DD HH:mm:ss）
+function formatDate(timestamp) {
+  const date = new Date(timestamp * 1000); // 注意：如果你传入的是秒级时间戳，需要乘以 1000
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 补零
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
 }
 
 </script>
 <template>
   <el-card class="page-container">
-    <template #header>
-      <div class="header">
-        <span>工厂管理</span>
-        <el-button type="success" @click="addFactoryButton()" >添加工厂</el-button>
+    <!-- 整体容器 -->
+    <div class="content-container">
+      <!-- 上部分：搜索表单 -->
+      <div class="search-form-container">
+        <el-form inline>
+          <el-form-item label="工厂名：" size="large">
+            <el-input v-model="name" placeholder="输入名称" size="large" style="width: 260px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getFactoryList();" size="large">搜索</el-button>
+            <el-button @click="name = ''" size="large">重置</el-button>
+            <el-button type="success" @click="addFactoryButton()" size="large">添加工厂</el-button>
+          </el-form-item>
+        </el-form>
       </div>
 
-    </template>
-    <!-- 搜索表单 -->
-    <el-form inline>
-      <el-form-item label="工厂名：" size="large">
-        <el-input v-model="name" placeholder="输入编号" size="large" style="width: 260px"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getFactoryList();" size="large">搜索</el-button>
-        <el-button @click="name = ''" size="large">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="factoryList" border style="width: 100%;margin-top: 20px" v-loading="loadingMain">
-      <el-table-column label="序号" type="index"></el-table-column>
-      <el-table-column label="工厂名" prop="name"></el-table-column>
-      <el-table-column label="入库时间" prop="insert_time">
-        <template #default="scope">
-          <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" prop="insert_time">
-        <template #default="scope">
-          <el-tag>{{ formatDate(scope.row.update_time) }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template #default="scope">
-          <el-button type="primary" @click="editClothingBtn(scope.row.id)">编辑</el-button>
-          <el-button type="danger" @click="deleteFactory(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-      <template #empty>
-        <el-empty description="没有数据"/>
+      <!-- 下部分：表格内容展示 -->
+      <div class="table-container">
+        <el-table :data="factoryList" border style="width: 100%;height: 520px; margin-top: 20px" v-loading="loadingMain">
+          <el-table-column label="序号" type="index" width="80"></el-table-column>
+          <el-table-column label="工厂名" prop="name"></el-table-column>
+          <el-table-column label="入库时间" prop="insert_time">
+            <template #default="scope">
+              <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间" prop="update_time">
+            <template #default="scope">
+              <el-tag>{{ formatDate(scope.row.update_time) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button type="primary" @click="editFactoryBtn(scope.row.id)">编辑</el-button>
+              <el-button type="danger" @click="deleteFactory(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
+          <template #empty>
+            <el-empty description="没有数据"/>
+          </template>
+        </el-table>
+
+        <!-- 分页条 -->
+
+        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
+                       layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
+                       @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
+      </div>
+    </div>
+
+    <!-- 添加工厂的对话框 -->
+    <el-dialog v-model="dialogVisible" title="添加工厂" width="30%">
+      <el-form :model="factoryForm" label-width="100px" :rules="rules" ref="formRef">
+        <el-form-item label="厂名：" prop="name">
+          <el-input v-model="factoryForm.name" placeholder="请输入厂名"/>
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitForm">提交</el-button>
       </template>
-    </el-table>
+    </el-dialog>
+
+    <el-dialog v-model="editDialogVisible" title="编辑工厂" width="30%">
+      <el-form :model="factoryForm" label-width="100px" :rules="rules" ref="formRef">
+        <el-form-item label="厂名：" prop="name">
+          <el-input v-model="factoryForm.name" placeholder="请输入厂名"/>
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="editDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="editFactoryConfirm">提交</el-button>
+      </template>
+    </el-dialog>
   </el-card>
-  <!-- 分页条 -->
-  <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
-                 layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
-                 @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
-
-  <!-- 添加工厂的对话框 -->
-  <el-dialog v-model="dialogVisible" title="添加工厂" width="30%">
-    <el-form :model="factoryForm" label-width="100px" :rules="rules" ref="formRef">
-      <el-form-item label="服饰编号：" prop="code">
-        <el-input v-model="factoryForm.name" placeholder="请输入厂名"/>
-      </el-form-item>
-
-    </el-form>
-
-    <template #footer>
-      <el-button @click="dialogVisible = false">取消</el-button>
-      <el-button type="primary" @click="submitForm">提交</el-button>
-    </template>
-  </el-dialog>
-
-  <el-dialog v-model="editDialogVisible" title="编辑工厂" width="30%">
-    <el-form :model="factoryForm" label-width="100px" :rules="rules" ref="formRef">
-      <el-form-item label="厂名：" prop="code">
-        <el-input v-model="factoryForm.name" placeholder="请输入厂名"/>
-      </el-form-item>
-
-    </el-form>
-
-    <template #footer>
-      <el-button @click="editDialogVisible = false">取消</el-button>
-      <el-button type="primary" @click="editClothingConfirm">提交</el-button>
-    </template>
-  </el-dialog>
-
-
 </template>
+
+
 <style lang="scss" scoped>
 .page-container {
-  min-height: 93%;
+  min-height: 100%;
   box-sizing: border-box;
+  background-color: #f0f0f0; // 整体背景颜色为灰色
 
-  .header {
+  .content-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    width: 100%;
+  }
+
+  .search-form-container,
+  .table-container {
+    width: 98%;
+
+    background-color: #fff; // 纯白色背景
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 10px;
+
+    }
   }
 }
-
 </style>

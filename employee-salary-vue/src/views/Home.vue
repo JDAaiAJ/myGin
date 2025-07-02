@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref, onMounted, nextTick, watch } from 'vue'
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { useUserStore } from '@/stores/useUserStore'
+import {computed, ref, onMounted, nextTick, watch} from 'vue'
+import {onBeforeRouteUpdate, useRoute, useRouter} from 'vue-router'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {useUserStore} from '@/stores/useUserStore'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -22,12 +22,18 @@ const usertype = computed(() => user.value?.type ?? null)
 // 用户类型名称
 const getUserTypeName = (type) => {
   switch (type) {
-    case 0: return '管理员'
-    case 1: return '厂长'
-    case 2: return '车位'
-    case 3: return '裁床'
-    case 4: return '尾部'
-    default: return '用户'
+    case 0:
+      return '管理员'
+    case 1:
+      return '厂长'
+    case 2:
+      return '车位'
+    case 3:
+      return '裁床'
+    case 4:
+      return '尾部'
+    default:
+      return '用户'
   }
 }
 
@@ -177,15 +183,25 @@ const logout = () => {
       router.push('/login');
       ElMessage.success('已退出登录');
     }, 500);
-  }).catch(() => {});
+  }).catch(() => {
+  });
 };
 
 const activeMenuIndex = computed(() => route.path);
+
+const breadcrumbs = computed(() => {
+  return route.matched.map(item => ({
+    path: item.path,
+    name: item.meta.title || item.name
+  }));
+});
+
+
 </script>
 
 <template>
   <el-container class="layout-container">
-    <el-aside width="200px">
+    <el-aside width="180px">
       <el-scrollbar>
         <div class="el-aside__logo"></div>
         <el-menu
@@ -208,9 +224,14 @@ const activeMenuIndex = computed(() => route.path);
 
     <el-container>
       <el-header class="top-nav">
-        <div class="welcome-message">
-          欢迎 {{ getUserTypeName(usertype) }} : {{ username }} 进入本管理系统
-        </div>
+        <!-- 面包屑导航 -->
+        <el-breadcrumb separator=">">
+          <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="index" :to="item.path">
+            {{ item.name }}
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <!-- 退出登录按钮 -->
         <el-button type="primary" link @click="logout">退出登录</el-button>
       </el-header>
 
@@ -229,16 +250,13 @@ const activeMenuIndex = computed(() => route.path);
               :key="item.name"
               :label="item.title"
               :name="item.name"
-          >
-
-          </el-tab-pane>
+          ></el-tab-pane>
 
           <RouterView v-slot="{ Component }">
             <KeepAlive>
               <component :is="Component"></component>
             </KeepAlive>
           </RouterView>
-
         </el-tabs>
       </el-main>
 
@@ -247,8 +265,7 @@ const activeMenuIndex = computed(() => route.path);
   </el-container>
 </template>
 
-<style lang="scss" scoped>
-.layout-container {
+<style lang="scss" scoped>.layout-container {
   height: 100vh;
 
   .top-nav {
@@ -256,17 +273,8 @@ const activeMenuIndex = computed(() => route.path);
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-
-    z-index: 100;
-    position: relative;
-    background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: #fff;
     border-bottom: 1px solid #dcdfe6;
-
-    .welcome-message {
-      font-size: 16px;
-      color: #333;
-    }
   }
 
   .el-aside {
@@ -287,9 +295,22 @@ const activeMenuIndex = computed(() => route.path);
   }
 
   .el-main {
-    margin-top: -10px;
-
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
+
+  .el-tabs {
+    height: 100%;
+    .el-tabs__content {
+      height: calc(100% - 40px);
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
 
   .el-footer {
     display: flex;
@@ -297,7 +318,11 @@ const activeMenuIndex = computed(() => route.path);
     justify-content: center;
     font-size: 14px;
     color: #666;
+    background: #fff;
+    border-top: 1px solid #dcdfe6;
   }
+
+
 
   .el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
     padding-left: 10px;
@@ -306,4 +331,19 @@ const activeMenuIndex = computed(() => route.path);
     background-color: #409EFF;
   }
 }
+.el-tabs--card>.el-tabs__header {
+  border-bottom: 1px solid #E4E7ED;
+  background-color: gainsboro;  //修改背景色
+}
+
+:deep(.el-tabs__header) {
+  margin-bottom: 0 !important;
+}
+
+// 激活的 tab 显示黑色下边框
+:deep(.el-tabs--card > .el-tabs__header .el-tabs__item.is-active) {
+  border-bottom-color: #409EFF !important;
+}
+
+
 </style>
