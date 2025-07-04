@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e717df2-ee01-4b50-9fdf-fd1bde66979e" name="更改" comment="页面整体优化 增加工厂管理添加和编辑功能" />
+    <list default="true" id="4e717df2-ee01-4b50-9fdf-fd1bde66979e" name="更改" comment="页面整体优化 增加工厂管理添加和编辑功能">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gin-project.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-gin/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-gin/.idea/.gitignore" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -107,7 +114,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2025.7.2提交" />
     <MESSAGE value="页面整体优化 增加工厂管理添加和编辑功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="页面整体优化 增加工厂管理添加和编辑功能" />
+    <MESSAGE value="1、优化el-table表头&#10;2、新增二级路由" />
+    <option name="LAST_COMMIT_MESSAGE" value="1、优化el-table表头&#10;2、新增二级路由" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
