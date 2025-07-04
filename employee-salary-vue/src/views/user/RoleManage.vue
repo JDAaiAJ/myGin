@@ -98,11 +98,11 @@ const submitForm = async () => {
 const deleteFactory = async (id) => {
   let result = await deleteFactoryService(id);
   console.log(result)
-  if (result.code === 200){
-    ElMessage.success(result.message? result.message : '删除成功');
+  if (result.code === 200) {
+    ElMessage.success(result.message ? result.message : '删除成功');
     await getFactoryList() // 刷新列表
-  }else{
-    ElMessage.warning(result.message? result.message : '删除失败');
+  } else {
+    ElMessage.warning(result.message ? result.message : '删除失败');
   }
 }
 
@@ -111,7 +111,7 @@ const editDialogVisible = ref(false);
 
 // 编辑服饰按钮
 const editFactoryBtn = async (id) => {
-  let params = { id: id };
+  let params = {id: id};
   let result = await getFactoryDetailService(params);
   if (result.code === 200) {
     factoryForm.value = result.data;
@@ -129,12 +129,12 @@ const editFactoryConfirm = async () => {
   // 提交服饰信息
   let result = await updateFactoryService(factoryForm.value);
 
-  if (result.code === 200){
-    ElMessage.success(result.message? result.message : '编辑成功');
+  if (result.code === 200) {
+    ElMessage.success(result.message ? result.message : '编辑成功');
     editDialogVisible.value = false;
     await getFactoryList();
   } else {
-    ElMessage.warning(result.message? result.message : '编辑失败');
+    ElMessage.warning(result.message ? result.message : '编辑失败');
   }
 }
 
@@ -160,22 +160,23 @@ function formatDate(timestamp) {
       <!-- 上部分：搜索表单 -->
       <div class="search-form-container">
         <el-form inline>
-          <el-form-item label="工厂名：" size="large">
+          <el-form-item label="角色名称：" size="large">
             <el-input v-model="name" placeholder="输入名称" size="large" style="width: 260px"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="getFactoryList();" size="large">搜索</el-button>
             <el-button @click="name = ''" size="large">重置</el-button>
-            <el-button type="success" @click="addFactoryButton()" size="large">添加工厂</el-button>
+            <el-button type="success" @click="addFactoryButton()" size="large">添加权限</el-button>
           </el-form-item>
         </el-form>
       </div>
 
       <!-- 下部分：表格内容展示 -->
       <div class="table-container">
-        <el-table :data="factoryList" border style="width: 100%;height: 520px; margin-top: 20px" v-loading="loadingMain" :header-cell-style="{ background: '#f5f7fa', color: '#606266' }">
+        <el-table :data="factoryList" border style="width: 100%;height: 520px; margin-top: 20px" v-loading="loadingMain"
+                  :header-cell-style="{ background: '#f5f7fa', color: '#606266' }">
           <el-table-column label="序号" type="index" width="80"></el-table-column>
-          <el-table-column label="工厂名" prop="name"></el-table-column>
+          <el-table-column label="角色名称" prop="name"></el-table-column>
           <el-table-column label="入库时间" prop="insert_time">
             <template #default="scope">
               <el-tag>{{ formatDate(scope.row.insert_time) }}</el-tag>
@@ -200,7 +201,8 @@ function formatDate(timestamp) {
         <!-- 分页条 -->
 
         <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[20, 50, 100, 150]"
-                       layout="jumper, total, sizes, prev, pager, next" background :total="total" @size-change="onSizeChange"
+                       layout="jumper, total, sizes, prev, pager, next" background :total="total"
+                       @size-change="onSizeChange"
                        @current-change="onCurrentChange" style="margin-top: 10px; justify-content: flex-end"/>
       </div>
     </div>

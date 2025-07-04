@@ -1,7 +1,15 @@
 <script setup>
 
-import {nextTick, onActivated, onDeactivated, onMounted, ref, watch} from 'vue'
+import {nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, watch} from 'vue'
 import {ElMessage} from 'element-plus'
+import {
+  deleteUserService,
+  getUserDetailService,
+  getUserFactoryService,
+  getUserListService,
+  updateUserService,
+  userRegisterService
+} from "../../api/user";
 
 //存储user列表数据
 const userList = ref([])
@@ -14,7 +22,12 @@ const userStore = useUserStore()
 
 onMounted(() => {
   getUserFactoryList()
+  getAllUserList()
   userInfo.value = userStore.user
+})
+
+onUnmounted(() => {
+  userInfo.value = null
 })
 
 //user搜索框输入内容
@@ -25,14 +38,7 @@ const pageNum = ref(1)//当前页
 const total = ref(0)//总条数
 const pageSize = ref(20)//每页条数
 
-import {
-  deleteUserService,
-  getUserDetailService,
-  getUserFactoryService,
-  getUserListService,
-  updateUserService,
-  userRegisterService
-} from "../../api/user";
+
 
 const loadingMain = ref(false)
 
@@ -56,8 +62,6 @@ const getAllUserList = async () => {
   // loadingMain.value = false
 }
 
-
-getAllUserList()
 
 
 //当每页条数发生了变化，调用此函数
@@ -259,15 +263,15 @@ const deleteUser = async (id) => {
           <el-form-item>
             <el-button type="primary" @click="getAllUserList();" size="large">搜索</el-button>
             <el-button @click="name = ''" size="large">重置</el-button>
-            <el-button v-if="userInfo.type === 1 || userInfo.u_id === 1" type="success" @click="addUserButton()" size="large">添加用户</el-button>
+            <el-button v-if="userInfo.value && (userInfo.value.type === 1 || userInfo.value.u_id === 1)" type="success" @click="addUserButton()" size="large">添加用户</el-button>
           </el-form-item>
         </el-form>
       </div>
 
       <!-- 下部分：表格内容展示 -->
       <div class="table-container">
-        <el-table :data="userList" border style="width: 100%;height: 520px;margin-top: 20px" v-loading="loadingMain">
-          <el-table-column label="序号" type="index" ></el-table-column>
+        <el-table :data="userList" border style="width: 100%;height: 520px;margin-top: 20px" v-loading="loadingMain"  :header-cell-style="{ background: '#f5f7fa', color: '#606266' }">
+          <el-table-column label="序号" type="index" width="60"></el-table-column>
           <el-table-column label="用户ID" prop="id" width="100"></el-table-column>
           <el-table-column label="真实姓名" prop="name" width="120"></el-table-column>
           <el-table-column label="用户名" prop="username"></el-table-column>

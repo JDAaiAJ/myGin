@@ -267,8 +267,8 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
       </div>
       <!-- 下部分：表格内容展示 -->
       <div class="table-container">
-        <el-table :data="clothingList" border style="width: 100%;height:520px;margin-top: 20px" v-loading="loadingMain" >
-          <el-table-column label="序号" type="index"></el-table-column>
+        <el-table :data="clothingList" border style="width: 100%;height:520px;margin-top: 20px" v-loading="loadingMain" :header-cell-style="{ background: '#f5f7fa', color: '#606266' }">
+          <el-table-column label="序号" type="index" width="80"></el-table-column>
           <el-table-column label="服饰编号" prop="code"></el-table-column>
           <el-table-column label="单价" prop="price" ></el-table-column>
           <el-table-column label="图片" prop="image">

@@ -493,14 +493,12 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
       </el-form>
     </div>
 
-
-
     <!-- 生产情况展示与新增组件布局 -->
     <el-row :gutter="20">
       <!-- 左侧：员工生产情况 -->
       <el-col :span="16">
         <el-card>
-          <el-table :data="userSalaryList" border style="width: 100%;height: 590px">
+          <el-table :data="userSalaryList" border style="width: 100%;height: 590px" :header-cell-style="{ background: '#f5f7fa', color: '#606266' }">
             <el-table-column prop="date" label="日期"></el-table-column>
             <el-table-column prop="code" label="服饰编号/特殊">
               <template #default="scope">
@@ -716,11 +714,11 @@ const baseUrl = 'http://192.168.235.129:8080' // 或者从环境变量中获取
 
   .search-form-container,
   .table-container {
-    width: 98%;
+    width: 99%;
 
     background-color: #fff; // 纯白色背景
     border-radius: 5px;
-    padding: 20px 8px 0px 8px;
+    padding: 20px 8px 0 8px;
     margin-bottom: 10px;
 
     &:last-child {

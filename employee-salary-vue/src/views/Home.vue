@@ -1,6 +1,6 @@
 <script setup>
-import {computed, ref, onMounted, nextTick, watch} from 'vue'
-import {onBeforeRouteUpdate, useRoute, useRouter} from 'vue-router'
+import {computed, ref, onMounted, watch} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {useUserStore} from '@/stores/useUserStore'
 
@@ -10,9 +10,6 @@ const router = useRouter()
 
 // 获取菜单路由
 const homeRoute = router.options.routes.find(route => route.path === '/home')
-const menuRoutes = computed(() => {
-  return homeRoute?.children || []
-})
 
 // 用户信息相关
 const user = computed(() => userStore.user)
@@ -38,53 +35,76 @@ const getUserTypeName = (type) => {
 }
 
 // 当前激活的tab
-let activeTab = ref("");
+let activeTab = ref('')
 // 所有tab
-let allTabs = ref([]);
+let allTabs = ref([])
 // 当前激活的路由
-let activePath = ref("");
+let activePath = ref('')
+
+// 工具函数：递归提取所有带 component 的路由
+function getFlatRoutes(routes) {
+  let result = []
+  routes?.forEach(route => {
+    if (route.component) {
+      result.push(route)
+    }
+    if (route.children && route.children.length > 0) {
+      result = result.concat(getFlatRoutes(route.children))
+    }
+  })
+  return result
+}
+
+// 获取菜单路由（包含所有可点击的叶子节点路由）
+const menuRoutes = computed(() => {
+  return getFlatRoutes(homeRoute?.children || [])
+})
 
 // 缓存菜单路由
 const menuRoutesMap = computed(() => {
-  const map = new Map();
+  const map = new Map()
   menuRoutes.value.forEach(route => {
-    map.set(route.path, route);
-  });
-  return map;
-});
+    map.set(route.path, route)
+  })
+  return map
+})
 
 // 初始化
 onMounted(() => {
-  const storedTabs = sessionStorage.getItem("allTabs");
-  const storedActiveTab = sessionStorage.getItem("activeTab");
+  const storedTabs = sessionStorage.getItem("allTabs")
+  const storedActiveTab = sessionStorage.getItem("activeTab")
 
   if (storedTabs) {
-    allTabs.value = JSON.parse(storedTabs);
+    allTabs.value = JSON.parse(storedTabs)
   } else {
-    const defaultRoute = menuRoutes.value[0]?.path || '/user/manage';
-    addTab(defaultRoute);
+    // 获取第一个菜单项的实际跳转路径
+    const firstMenuItem = menuRoutes.value[0]
+    const defaultPath = firstMenuItem?.redirect || firstMenuItem?.children?.[0]?.path || '/user/list'
+    addTab(defaultPath)
   }
 
   if (storedActiveTab) {
-    activeTab.value = storedActiveTab;
-    changeActiveRoute(storedActiveTab);
+    activeTab.value = storedActiveTab
+    changeActiveRoute(storedActiveTab)
   } else {
-    activeTab.value = allTabs.value[0]?.name || '';
-    changeActiveRoute(activeTab.value);
+    activeTab.value = allTabs.value[0]?.name || ''
+    changeActiveRoute(activeTab.value)
   }
-});
+})
 
 // 添加新tab
 function addTab(path) {
-  const routeItem = menuRoutesMap.value.get(path);
-  if (!routeItem) return;
+  const routeItem = menuRoutesMap.value.get(path)
+
+  // 如果是父级菜单（没有 component），则不允许添加 tab
+  if (!routeItem || !routeItem.component) return
 
   // 如果tab已存在，直接激活
-  const existingTabIndex = allTabs.value.findIndex(tab => tab.path === path);
+  const existingTabIndex = allTabs.value.findIndex(tab => tab.path === path)
   if (existingTabIndex > -1) {
-    activeTab.value = path;
-    changeActiveRoute(path);
-    return;
+    activeTab.value = path
+    changeActiveRoute(path)
+    return
   }
 
   // 添加新tab
@@ -92,111 +112,115 @@ function addTab(path) {
     title: routeItem.meta.title,
     name: path,
     path: path
-  };
+  }
 
-  allTabs.value.push(newTab);
-  activeTab.value = path;
-  changeActiveRoute(path);
+  allTabs.value.push(newTab)
+  activeTab.value = path
+  changeActiveRoute(path)
 
   // 保存到sessionStorage
-  saveTabsToStorage();
+  saveTabsToStorage()
 }
 
 // 点击 tab
 const clickTab = (tab) => {
-  let tabName = tab.paneName;
-  const selectTab = allTabs.value.find(t => t.name === tabName);
+  let tabName = tab.paneName
+  const selectTab = allTabs.value.find(t => t.name === tabName)
   if (selectTab) {
-    activeTab.value = tabName;
-    changeActiveRoute(selectTab.path);
-    saveTabsToStorage();
+    activeTab.value = tabName
+    changeActiveRoute(selectTab.path)
+    saveTabsToStorage()
   }
-};
+}
 
 // 移除 tab
 const removeTab = (targetName) => {
-  let tabs = allTabs.value;
-  let activeName = activeTab.value;
+  let tabs = allTabs.value
+  let activeName = activeTab.value
 
   // 如果关闭的是当前激活的tab，需要切换到其他tab
   if (activeName === targetName) {
-    const tabsLength = tabs.length;
+    const tabsLength = tabs.length
     if (tabsLength === 1) {
-      ElMessage.warning('最后一个标签无法删除');
-      return;
+      ElMessage.warning('最后一个标签无法删除')
+      return
     } else {
-      // 找到当前tab的索引
-      const currentIndex = tabs.findIndex(tab => tab.name === targetName);
-      // 获取下一个或上一个tab
-      let nextTabIndex = currentIndex === tabsLength - 1 ? currentIndex - 1 : currentIndex + 1;
-      const nextTab = tabs[nextTabIndex];
+      const currentIndex = tabs.findIndex(tab => tab.name === targetName)
+      let nextTabIndex = currentIndex === tabsLength - 1 ? currentIndex - 1 : currentIndex + 1
+      const nextTab = tabs[nextTabIndex]
       if (nextTab) {
-        activeName = nextTab.name;
-        changeActiveRoute(nextTab.path);
+        activeName = nextTab.name
+        changeActiveRoute(nextTab.path)
       }
     }
   }
 
   // 更新tab列表
-  allTabs.value = tabs.filter(tab => tab.name !== targetName);
-  activeTab.value = activeName;
+  allTabs.value = tabs.filter(tab => tab.name !== targetName)
+  activeTab.value = activeName
 
   // 保存到sessionStorage
-  saveTabsToStorage();
-};
+  saveTabsToStorage()
+}
 
 // 跳转路由
 const changeActiveRoute = (path) => {
   if (path && path !== activePath.value) {
-    activePath.value = path;
-    router.push(path);
+    activePath.value = path
+    router.push(path)
   }
-};
+}
 
 // 保存tab状态到sessionStorage
 const saveTabsToStorage = () => {
-  sessionStorage.setItem("allTabs", JSON.stringify(allTabs.value));
-  sessionStorage.setItem("activeTab", activeTab.value);
-};
+  sessionStorage.setItem("allTabs", JSON.stringify(allTabs.value))
+  sessionStorage.setItem("activeTab", activeTab.value)
+}
 
 // 监听路由变化
 watch(() => route.path, (newPath) => {
   // 检查路由是否在tab列表中
-  const tabExists = allTabs.value.some(tab => tab.path === newPath);
+  const tabExists = allTabs.value.some(tab => tab.path === newPath)
   if (tabExists) {
-    activeTab.value = newPath;
+    activeTab.value = newPath
   } else {
     // 如果是新路由，添加到tab列表
-    addTab(newPath);
+    addTab(newPath)
   }
-});
+})
 
 // 退出登录
 const logout = () => {
-  ElMessageBox.confirm('确认退出登录吗?', '提示', {
+  ElMessageBox.confirm('确认退出登录吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
-  }).then(() => {
-    userStore.logout();
-    setTimeout(() => {
-      router.push('/login');
-      ElMessage.success('已退出登录');
-    }, 500);
-  }).catch(() => {
-  });
-};
+  }).then(async () => {
+    // 清除会话存储中的 allTabs 和 activeTab
+    sessionStorage.removeItem('allTabs');
+    sessionStorage.removeItem('activeTab');
 
-const activeMenuIndex = computed(() => route.path);
+    // 清除用户状态
+    userStore.logout();
+
+    // 跳转到登录页
+    router.push('/login');
+
+    // 提示用户已退出登录
+    ElMessage.success('已退出登录');
+  }).catch(() => {
+    // 用户点击取消，不做任何操作
+  });
+}
+
+const activeMenuIndex = computed(() => route.path)
 
 const breadcrumbs = computed(() => {
   return route.matched.map(item => ({
     path: item.path,
     name: item.meta.title || item.name
-  }));
-});
-
-
+  }))
+})
 </script>
 
 <template>
@@ -204,35 +228,57 @@ const breadcrumbs = computed(() => {
     <el-aside width="180px">
       <el-scrollbar>
         <div class="el-aside__logo"></div>
+
         <el-menu
             active-text-color="#ffd04b"
             background-color="#232323"
             text-color="#fff"
             :default-active="activeMenuIndex"
         >
-          <el-menu-item
-              v-for="item in menuRoutes"
-              :key="item.path"
-              :index="item.path"
-              @click="addTab(item.path)"
-          >
-            <span>{{ item.meta.title }}</span>
-          </el-menu-item>
+          <template v-for="item in homeRoute?.children || []" :key="item.path">
+            <!-- 如果有 children，则显示子菜单 -->
+            <el-sub-menu v-if="item.children && item.children.length > 0" :index="item.path">
+              <template #title>{{ item.meta.title }}</template>
+              <el-menu-item
+                  v-for="child in item.children"
+                  :key="child.path"
+                  :index="child.path"
+                  @click="addTab(child.path)"
+              >
+                {{ child.meta.title }}
+              </el-menu-item>
+            </el-sub-menu>
+
+            <!-- 否则显示普通菜单项 -->
+            <el-menu-item v-else :index="item.path" @click="addTab(item.path)">
+              {{ item.meta.title }}
+            </el-menu-item>
+          </template>
         </el-menu>
       </el-scrollbar>
     </el-aside>
 
     <el-container>
       <el-header class="top-nav">
-        <!-- 面包屑导航 -->
-        <el-breadcrumb separator=">">
-          <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="index" :to="item.path">
-            {{ item.name }}
-          </el-breadcrumb-item>
-        </el-breadcrumb>
+        <!-- 左侧内容包裹容器 -->
+        <div class="header-left">
+          <!-- navigation图标 -->
+          <img src="@/assets/icon/navigation.png" alt="navigation icon" class="nav-icon">
 
-        <!-- 退出登录按钮 -->
-        <el-button type="primary" link @click="logout">退出登录</el-button>
+          <!-- 面包屑导航 -->
+          <el-breadcrumb separator=">">
+            <el-breadcrumb-item v-for="(item, index) in breadcrumbs" :key="index" :to="item.path"
+                                style="font-size: 16px">
+              {{ item.name }}
+            </el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+
+        <!-- 右侧内容包裹容器 -->
+        <div class="header-right">
+          <!-- 退出登录按钮 -->
+          <el-button type="primary" link @click="logout" style="font-size: 15px">退出登录</el-button>
+        </div>
       </el-header>
 
       <el-main>
@@ -256,6 +302,7 @@ const breadcrumbs = computed(() => {
             <KeepAlive>
               <component :is="Component"></component>
             </KeepAlive>
+
           </RouterView>
         </el-tabs>
       </el-main>
@@ -265,16 +312,31 @@ const breadcrumbs = computed(() => {
   </el-container>
 </template>
 
-<style lang="scss" scoped>.layout-container {
+<style lang="scss" scoped>
+.layout-container {
   height: 100vh;
 
   .top-nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0 20px;
     background: #fff;
     border-bottom: 1px solid #dcdfe6;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        vertical-align: middle;
+      }
+    }
+
+    .header-right {
+      margin-left: auto;
+    }
   }
 
   .el-aside {
@@ -303,6 +365,7 @@ const breadcrumbs = computed(() => {
 
   .el-tabs {
     height: 100%;
+
     .el-tabs__content {
       height: calc(100% - 40px);
       overflow: auto;
@@ -310,7 +373,6 @@ const breadcrumbs = computed(() => {
       flex-direction: column;
     }
   }
-
 
   .el-footer {
     display: flex;
@@ -322,8 +384,6 @@ const breadcrumbs = computed(() => {
     border-top: 1px solid #dcdfe6;
   }
 
-
-
   .el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
     padding-left: 10px;
     padding-right: 10px;
@@ -331,19 +391,22 @@ const breadcrumbs = computed(() => {
     background-color: #409EFF;
   }
 }
-.el-tabs--card>.el-tabs__header {
+
+.el-tabs--card > .el-tabs__header {
   border-bottom: 1px solid #E4E7ED;
-  background-color: gainsboro;  //修改背景色
+  background-color: gainsboro;
 }
 
 :deep(.el-tabs__header) {
   margin-bottom: 0 !important;
 }
 
-// 激活的 tab 显示黑色下边框
 :deep(.el-tabs--card > .el-tabs__header .el-tabs__item.is-active) {
   border-bottom-color: #409EFF !important;
 }
 
-
+.el-menu--dark .el-menu-item,
+.el-menu--dark .el-sub-menu__title {
+  color: #fff;
+}
 </style>

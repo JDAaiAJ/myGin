@@ -4,8 +4,18 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e717df2-ee01-4b50-9fdf-fd1bde66979e" name="更改" comment="">
+    <list default="true" id="4e717df2-ee01-4b50-9fdf-fd1bde66979e" name="更改" comment="页面整体优化 增加工厂管理添加和编辑功能">
+      <change afterPath="$PROJECT_DIR$/employee-salary-vue/src/assets/icon/navigation.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/employee-salary-vue/src/components/SidebarMenu.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/user/RoleManage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/Home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/clothing/ClothingManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/clothing/ClothingManage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/factory/FactoryManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/factory/FactoryManage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/record/SalaryRecord.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/record/SalaryRecord.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/salary/SalaryManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/salary/SalaryManage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/user/UserManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/user/UserManage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +36,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="jzh" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -59,7 +69,7 @@
     "WebServerToolWindowPanel.toolwindow.show.size": "false",
     "git-widget-placeholder": "jzh",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "D:/GoProject/gin-project",
+    "last_opened_file_path": "D:/GoProject/gin-project/employee-salary-vue/src/views/user",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -74,11 +84,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GoProject\gin-project\employee-salary-vue\src\views\user" />
       <recent name="D:\GoProject\gin-project\employee-salary-vue\src\stores" />
       <recent name="D:\GoProject\gin-project\employee-salary-vue\src\api" />
       <recent name="D:\GoProject\gin-project\employee-salary-vue\src\views\factory" />
       <recent name="D:\GoProject\gin-project\employee-salary-gin\controllers" />
-      <recent name="D:\GoProject\gin-project\employee-salary-gin\models" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GoProject\gin-project\employee-salary-vue\src\assets\icon" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -102,6 +115,11 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="2025.7.2提交" />
+    <MESSAGE value="页面整体优化 增加工厂管理添加和编辑功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="页面整体优化 增加工厂管理添加和编辑功能" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

@@ -117,7 +117,7 @@ const resetSearch = () => {
 
   .card-list-container, .el-empty {
     margin-top: 20px;
-    max-height: 600px; // 固定最大高度
+    height: 580px; // 固定最大高度
     overflow-y: auto; // 超出显示滚动条
     background-color: #fff; // 纯白色背景
     border-radius: 5px;
