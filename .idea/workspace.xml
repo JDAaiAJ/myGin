@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e717df2-ee01-4b50-9fdf-fd1bde66979e" name="更改" comment="页面整体优化 增加工厂管理添加和编辑功能">
-      <change afterPath="$PROJECT_DIR$/employee-salary-vue/src/assets/icon/navigation.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-salary-vue/src/components/SidebarMenu.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/user/RoleManage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/Home.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/clothing/ClothingManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/clothing/ClothingManage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/factory/FactoryManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/factory/FactoryManage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/record/SalaryRecord.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/record/SalaryRecord.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/salary/SalaryManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/salary/SalaryManage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-salary-vue/src/views/user/UserManage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/employee-salary-vue/src/views/user/UserManage.vue" afterDir="false" />
-    </list>
+    <list default="true" id="4e717df2-ee01-4b50-9fdf-fd1bde66979e" name="更改" comment="页面整体优化 增加工厂管理添加和编辑功能" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,35 +41,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
-    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
-    "WebServerToolWindowPanel.toolwindow.show.date": "false",
-    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
-    "WebServerToolWindowPanel.toolwindow.show.size": "false",
-    "git-widget-placeholder": "jzh",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "D:/GoProject/gin-project/employee-salary-vue/src/views/user",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\GoLand 2023.3.6\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;jzh&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/GoProject/gin-project/employee-salary-vue/src/views/user&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\GoLand 2023.3.6\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "vue.recent.templates": [
-      "Vue Composition API Component"
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\GoProject\gin-project\employee-salary-vue\src\views\user" />
